@@ -18,17 +18,38 @@ async function initFreedomTool() {
     // Check current URL
     const currentUrl = window.location.href;
     console.log(`[Freedom Tool] Current URL: ${currentUrl}`);
-    
-    // Enhanced domain matching
-    const isDistracting = distractingDomains.some(domain => {
-      const domainPattern = domain.replace('.', '\\.');
-      const regex = new RegExp(`(^|\\.)${domainPattern}($|\\/)`, 'i');
-      return regex.test(currentUrl);
-    });
 
-    console.log(`[Freedom Tool] Is distracting site? ${isDistracting}`);
+    function isUrlDistracting(url, domains) {
+      if (!domains || domains.length === 0) {
+        return false;
+      }
+      return domains.some(domain => {
+        // Ensure domain is a string and not empty
+        if (typeof domain !== 'string' || domain.trim() === '') {
+          return false;
+        }
+        try {
+          // Escape special characters in the domain for regex
+          const domainPattern = domain.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+          // Match domain at the start of hostname or preceded by a dot (for subdomains)
+          // and followed by a slash, query parameter, hash, or end of string.
+          const regex = new RegExp(`(^|\\.)${domainPattern}($|\\/|\\?|#)`, 'i');
+          // Use URL object to robustly get hostname
+          const hostname = new URL(url).hostname;
+          return regex.test(hostname);
+        } catch (e) {
+          // If domain is invalid and causes URL constructor to fail or other error
+          console.warn(`[Freedom Tool] Invalid domain or URL processing error for domain "${domain}" and URL "${url}":`, e);
+          return false;
+        }
+      });
+    }
     
-    if (!isDistracting) {
+    const isDistractingSite = isUrlDistracting(currentUrl, distractingDomains);
+
+    console.log(`[Freedom Tool] Is distracting site? ${isDistractingSite}`);
+    
+    if (!isDistractingSite) {
       console.log('[Freedom Tool] Site not in blocked list');
       return;
     }
