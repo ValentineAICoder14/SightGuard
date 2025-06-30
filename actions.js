@@ -3,6 +3,22 @@ console.log('[Freedom Tool] Actions module loaded');
 
 import { removeOverlay, showModal, showMainModal, showToast } from './overlay.js';
 
+// IDs for Modals and Controls
+const PRAY_MODAL_ID = 'pray-modal';
+const CONTINUE_MODAL_ID = 'continue-modal';
+
+const PRAY_BTN_ID = 'pray-btn';
+const LEAVE_BTN_ID = 'leave-btn';
+const CONTINUE_BTN_ID = 'continue-btn';
+
+const PRAY_BACK_BTN_ID = 'pray-back-btn';
+const BIBLE_BTN_ID = 'bible-btn';
+const PRAYER_TEXT_ID = 'prayer-text';
+
+const CONTINUE_BACK_BTN_ID = 'continue-back-btn';
+const CONFIRM_CONTINUE_BTN_ID = 'confirm-continue-btn';
+
+
 // Prayer database
 const PRAYERS = [
   "Lord, guide my heart and mind today. Amen.",
@@ -17,29 +33,29 @@ export function setupEventListeners() {
   console.log('[Freedom Tool] Setting up event listeners');
   
   // Main modal buttons
-  document.getElementById('pray-btn')?.addEventListener('click', handlePray);
-  document.getElementById('leave-btn')?.addEventListener('click', handleLeave);
-  document.getElementById('continue-btn')?.addEventListener('click', handleContinue);
+  document.getElementById(PRAY_BTN_ID)?.addEventListener('click', handlePray);
+  document.getElementById(LEAVE_BTN_ID)?.addEventListener('click', handleLeave);
+  document.getElementById(CONTINUE_BTN_ID)?.addEventListener('click', handleContinue);
   
   // Prayer modal buttons
-  document.getElementById('pray-back-btn')?.addEventListener('click', () => {
+  document.getElementById(PRAY_BACK_BTN_ID)?.addEventListener('click', () => {
     console.log('[Freedom Tool] Pray back button clicked');
     showMainModal();
   });
   
-  document.getElementById('bible-btn')?.addEventListener('click', () => {
+  document.getElementById(BIBLE_BTN_ID)?.addEventListener('click', () => {
     console.log('[Freedom Tool] Bible button clicked');
     removeOverlay();
-    window.location.href = "https://bible.com/random";
+    window.location.href = "https://bible.com/random"; // External URL, can remain as string
   });
   
   // Continue modal buttons
-  document.getElementById('continue-back-btn')?.addEventListener('click', () => {
+  document.getElementById(CONTINUE_BACK_BTN_ID)?.addEventListener('click', () => {
     console.log('[Freedom Tool] Continue back button clicked');
     showMainModal();
   });
   
-  document.getElementById('confirm-continue-btn')?.addEventListener('click', () => {
+  document.getElementById(CONFIRM_CONTINUE_BTN_ID)?.addEventListener('click', () => {
     console.log('[Freedom Tool] Confirm continue button clicked');
     removeOverlay();
     showToast("Stay mindful of your time! ⏳", 2000);
@@ -54,13 +70,13 @@ export function handlePray() {
   const randomPrayer = PRAYERS[Math.floor(Math.random() * PRAYERS.length)];
   
   // Set prayer text
-  const prayerText = document.getElementById('prayer-text');
+  const prayerText = document.getElementById(PRAYER_TEXT_ID);
   if (prayerText) {
     prayerText.textContent = randomPrayer;
   }
   
   // Show prayer modal
-  showModal('pray-modal');
+  showModal(PRAY_MODAL_ID);
 }
 
 /**
@@ -71,7 +87,7 @@ export function handleLeave() {
   showToast("Proud of you for walking away! 🙌");
   
   setTimeout(() => {
-    window.location.href = "https://google.com";
+    window.location.href = "https://google.com"; // External URL, can remain as string
   }, 1500);
 }
 
@@ -81,5 +97,5 @@ export function handleLeave() {
 export function handleContinue() {
   console.log('[Freedom Tool] Handling continue action');
   // Show continue confirmation modal
-  showModal('continue-modal');
+  showModal(CONTINUE_MODAL_ID);
 }
